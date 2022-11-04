@@ -1,10 +1,12 @@
 // =============================================================================
 //                                  Config
 // =============================================================================
-const { expect } = require("chai");
-const { ethers } = require("hardhat");
+//import { expect } from ("chai.js");
+//const { ethers } = require("hardhat");
 const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/");
-const abiDecoder = require('abi-decoder');
+//const abiDecoder = require('abi-decoder');
+//var jsdom = require("jsdom");
+//$ = require("jquery")(new jsdom.JSDOM().window);
 
 //import { abiDecoder } from './abi-decoder.js';
 var defaultAccount;
@@ -206,7 +208,7 @@ async function getLastActive(user) {
 	  var currentBlock = await provider.getBlockWithTransactions(curBlock);
 	  var txns = currentBlock.transactions;
 
-	  for (var j = 0 ; j <txns.length ; j--) {
+	  for (var j = 0 ; j <txns.length ; j++) {
 	  	var txn = txns[j];
 			if(txn.to == null){continue;}
 	  	if (txn.from.toLowerCase() === user.toLowerCase()) {
@@ -223,10 +225,11 @@ async function getLastActive(user) {
 // TODO: add an IOU ('I owe you') to the system
 // The person you owe money is passed as 'creditor'
 // The amount you owe them is passed as 'amount'
-async function add_IOU(debtor, creditor, amount) {	
+async function add_IOU(creditor, amount) {
+	var debtor  = defaultAccount;	
 	var users = await getUsers();
-	var over1 = await BlockchainSplitwise.connect(debtor).addIOU(creditor, amount);
-	const signers = await ethers.getSigners();
+	//const signers = await ethers.getSigners();
+	var over1 = await BlockchainSplitwise.connect(await provider.getSigner(debtor)).addIOU(creditor, amount);
 
 	async function getNeighbors(node) {
 		var graph = new Array();
@@ -252,18 +255,18 @@ async function add_IOU(debtor, creditor, amount) {
 			}
 		}
 		return null;
-	}
+	}``
 
 	//console.log(await users.length);
 
 	for (var i=0; i<users.length; i++)
 	 {
-		while (await BlockchainSplitwise.lookup(users[i],debtor.address) > 0 && 
-		await doBFS(debtor.address,users[i],getNeighbors) != null)
+		while (await BlockchainSplitwise.lookup(users[i],debtor) > 0 && 
+		await doBFS(debtor,users[i],getNeighbors) != null)
 		{
-		 //   console.log(await doBFS(debtor.address,users[i],getNeighbors));
+		 //   console.log(await doBFS(debtor,users[i],getNeighbors));
 			
-			var trace = await doBFS(debtor.address,users[i],getNeighbors);
+			var trace = await doBFS(debtor,users[i],getNeighbors);
 			//console.log(trace.length);
 			//console.log(users[trace[2]],users[trace[0]]),await Deploy.lookup(users[trace[2]],users[trace[0]]);
 			var minValue = Number.MAX_VALUE;
@@ -277,34 +280,14 @@ async function add_IOU(debtor, creditor, amount) {
 			}
 
 			for (var i = 0; i<trace.length-1; i++) {
-				var over2 = await BlockchainSplitwise.connect(signers[0]).subIOU(users[trace[i]],users[trace[i+1]],minValue);
+				var over2 = await BlockchainSplitwise.connect(await provider.getSigner("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")).subIOU(users[trace[i]],users[trace[i+1]],minValue);
 			}
-			var over3 = await BlockchainSplitwise.connect(signers[0]).subIOU(users[trace[trace.length-1]],users[trace[0]],minValue);
+			var over3 = await BlockchainSplitwise.connect(await provider.getSigner("0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266")).subIOU(users[trace[trace.length-1]],users[trace[0]],minValue);
 		}
 	}
 
 
-	/*for (var i=0; i<users.length; i++)
-	{
-		while (doBFS(debtor,users[i],getNeighbors) != null)
-		{
-			var trace = doBFS(debtor,users[i],getNeighbors);
-			var minValue = Number.MAX_VALUE;
-			for (var i = 0; i<trace.length; i++) {
-				var value = 0;
-				if (i < trace.length - 1) {
-					value = await BlockchainSplitwise.lookup(trace[i],trace[i+1]);
-				}
-				else value = await BlockchainSplitwise.lookup(trace[i],trace[0]);
-				minValue = Math.min (min1, value);
-			}
-
-			for (var i = 0; i<trace.length-1; i++) {
-				var over2 = await BlockchainSplitwise.connect(debtor).subIOU(trace[i],trace[i+1],minValue);
-			}
-			var over3 = await BlockchainSplitwise.connect(debtor).subIOU(trace[trace.length-1],trace[0],minValue);
-	    }
-    }*/
+	
 }
 
 // =============================================================================
@@ -373,7 +356,7 @@ async function doBFS(start, end, getNeighbors) {
 // =============================================================================
 //                                      UI
 // =============================================================================
-/*
+
 // This sets the default account on load and displays the total owed to that
 // account.
 provider.listAccounts().then((response)=> {
@@ -384,7 +367,7 @@ provider.listAccounts().then((response)=> {
 	});
 
 	getLastActive(defaultAccount).then((response)=>{
-		time = timeConverter(response)
+		time = new Date(response)
 		$("#last_active").html(time)
 	});
 });
@@ -429,8 +412,7 @@ $("#addiou").click(function() {
 // Pass in a discription of what you're printing, and then the object to print
 function log(description, obj) {
 	$("#log").html($("#log").html() + description + ": " + JSON.stringify(obj, null, 2) + "\n\n");
-}*/
-
+}
 
 // =============================================================================
 //                                      TESTING
@@ -452,7 +434,7 @@ function check(name, condition) {
 		return 0;
 	}
 }
-
+/*
 async function sanityCheck() {
 	const signers = await ethers.getSigners();
 	const signer = signers[0];
@@ -510,5 +492,5 @@ async function sanityCheck() {
 	console.log("lookup(1,2) after the 3st trade",await BlockchainSplitwise.lookup(accounts[1],accounts[2]));
 	console.log("lookup(2,0) after the 3st trade",await BlockchainSplitwise.lookup(accounts[2],accounts[0]));
 }
-sanityCheck();
+sanityCheck();*/
 //Uncomment this line to run the sanity check when you first open index.html

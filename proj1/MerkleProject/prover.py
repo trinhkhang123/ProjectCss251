@@ -104,7 +104,6 @@ if __name__ == "__main__":
     leaves = [b"data item " + str(i).encode() for i in range(1000)]
     print('\nI generated 1000 leaves for a Merkle tree of height 10.')
     
-   
     # Generate proof for leaf #743
     pos = 743
     path  = gen_merkle_proof(leaves, pos)
@@ -113,6 +112,5 @@ if __name__ == "__main__":
     # write proof to file
     write_proof(prooffile, proof)
     
-
     print('I generated a Merkle proof for leaf #{} in file {}\n'.format(pos,prooffile))
     sys.exit(0)
