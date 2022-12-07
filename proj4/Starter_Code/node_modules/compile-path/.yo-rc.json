@@ -1,0 +1,9 @@
+{
+  "generator-codibly-ts": {
+    "name": "compile-path",
+    "description": "",
+    "version": "0.0.0-semantic-release",
+    "repository": "https://github.com/codibly/compile-path",
+    "author": "Damian Łabas <damian.labas@codibly.com>"
+  }
+}

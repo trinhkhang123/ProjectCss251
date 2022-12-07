@@ -1,0 +1,36 @@
+{
+  "name": "cs251-cash",
+  "version": "0.1.0",
+  "description": "Simple Tornado clone for CS 251",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha -s 1s -t 5s test/if_then_else.js test/selective_switch.js test/compute_spend_inputs.js test/spend.js"
+  },
+  "author": "aozdemir",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "big-integer": "^1.6.47",
+    "chai": "^4.1.0",
+    "circom": "github:alex-ozdemir/circom#cs251",
+    "circomlib": "^2.0.5",
+    "compile-path": "^1.2.0",
+    "crypto-js": "^4.1.1",
+    "docopt": "^0.6.2",
+    "dotenv": "^16.0.3",
+    "mocha": "^5.2.0",
+    "snarkjs": "^0.5.0",
+    "solc": "^0.8.17",
+    "solidity": "^0.0.1",
+    "uniq": "^1.0.1",
+    "web3": "^1.8.1",
+    "web3-utils": "^1.8.1"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomiclabs/hardhat-ganache": "^2.0.1",
+    "@nomiclabs/hardhat-web3": "^2.0.0",
+    "hardhat": "^2.12.2"
+  }
+}
