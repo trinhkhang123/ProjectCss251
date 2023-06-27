@@ -994,8 +994,8 @@ async function withdraw (note, recipient)
 
 //This sets the default account on load and displays the total owed to that
 //account.
-web3.eth.getAccounts().then((response)=> {
-    web3.eth.defaultAccount = response[0];
+	web3.eth.getAccounts().then((response)=> {
+	    web3.eth.defaultAccount = response[0];
     // Initialize the exchange
     init().then(() => {
         // fill in UI with current exchange rate:
